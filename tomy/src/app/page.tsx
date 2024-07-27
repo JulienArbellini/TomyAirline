@@ -53,7 +53,7 @@ export default function Home() {
         <AnimatePresence>
           {showButton && (
             <motion.a
-              href="/about"
+              href="/home"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -111,7 +111,7 @@ export default function Home() {
         </AnimatePresence>
 
         <a
-          href="/about"
+          href="/home"
           className="absolute bottom-10 right-10 bg-black text-white p-2 rounded"
         >
           Skip Intro
