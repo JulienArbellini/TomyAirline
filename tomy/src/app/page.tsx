@@ -3,10 +3,13 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
+import ReactPlayer from 'react-player';
 
 export default function Home() {
   const [showButton, setShowButton] = useState(false);
   const [showAnnouncement, setShowAnnouncement] = useState(false);
+  const [showVideo, setShowVideo] = useState(false);
+  const [fadeOutAnnouncement, setFadeOutAnnouncement] = useState(false);
 
   useEffect(() => {
     // Step 1: Fade in the button (0-1 seconds)
@@ -24,10 +27,23 @@ export default function Home() {
       setShowAnnouncement(true);
     }, 6000); // Wait 6 seconds (5 seconds for button + 1 second idle)
 
+    // Step 4: Fade out the announcement (after 4 seconds of being shown)
+    const fadeOutAnnouncementTimer = setTimeout(() => {
+      setFadeOutAnnouncement(true);
+    }, 10000); // Wait 10 seconds (6 seconds previous delays + 4 seconds visible)
+
+    // Step 5: Show the video (after announcement fades out)
+    const showVideoTimer = setTimeout(() => {
+      setShowAnnouncement(false);
+      setShowVideo(true);
+    }, 11000); // Wait 11 seconds (10 seconds previous delays + 1 second fade out)
+
     return () => {
       clearTimeout(fadeInTimer);
       clearTimeout(fadeOutTimer);
       clearTimeout(showAnnouncementTimer);
+      clearTimeout(fadeOutAnnouncementTimer);
+      clearTimeout(showVideoTimer);
     };
   }, []);
 
@@ -57,7 +73,7 @@ export default function Home() {
         <AnimatePresence>
           {showAnnouncement && (
             <motion.div
-              className="w-[588px] h-[88px] flex justify-center items-center bg-slate-300"
+              className={`w-[588px] h-[88px] flex justify-center items-center bg-slate-300 ${fadeOutAnnouncement ? 'opacity-0' : 'opacity-100'}`}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -67,6 +83,29 @@ export default function Home() {
               <div className="bg-black text-white p-2 rounded-lg h-full w-full text-6xl flex justify-center items-center">
                 <p>ANNONCEMENT</p>
               </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {showVideo && (
+            <motion.div
+              className="absolute top-0 left-0 w-full h-full"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1 }}
+              key="video"
+            >
+              <ReactPlayer
+                url="https://www.youtube.com/watch?v=YoQjD5O8Fzw"
+                playing
+                loop
+                muted
+                width="100%"
+                height="100%"
+                className="object-cover"
+              />
             </motion.div>
           )}
         </AnimatePresence>
