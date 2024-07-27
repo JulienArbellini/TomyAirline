@@ -1,24 +1,83 @@
-import Image from 'next/image'
+"use client";
+
+import { useState, useEffect } from 'react';
+import Image from 'next/image';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Home() {
+  const [showButton, setShowButton] = useState(false);
+  const [showAnnouncement, setShowAnnouncement] = useState(false);
+
+  useEffect(() => {
+    // Step 1: Fade in the button (0-1 seconds)
+    const fadeInTimer = setTimeout(() => {
+      setShowButton(true);
+    }, 100); // Short delay to ensure CSS transition applies
+
+    // Step 2: Keep the button visible (1-4 seconds)
+    const fadeOutTimer = setTimeout(() => {
+      setShowButton(false);
+    }, 4000); // Wait 4 seconds before starting to fade out
+
+    // Step 3: Show the announcement (6-7 seconds)
+    const showAnnouncementTimer = setTimeout(() => {
+      setShowAnnouncement(true);
+    }, 6000); // Wait 6 seconds (5 seconds for button + 1 second idle)
+
+    return () => {
+      clearTimeout(fadeInTimer);
+      clearTimeout(fadeOutTimer);
+      clearTimeout(showAnnouncementTimer);
+    };
+  }, []);
+
   return (
-    <div className=" w-screen h-screen bg-cover bg-[url('https://s3-alpha-sig.figma.com/img/5f72/752a/1a4dfac61230f468d947ab702b97e754?Expires=1722816000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=iquPnc7YYR9lL9cHa3fDw5GrE73X3Jei6d~wNChWEiaMFyjQhPtZTbEWOgNskNxTz7mF2DMgQTRW-Cuzc~i6hkYo-PsvDJY9G34fXoXAxc5erAKhtQWq1Z4cnrerWy2G0kqVKKcch81O4jiV9KGte7q1bOvnVyfqNWFr-ORx3e0Zp9ekwZ4RTzCczfyzExpLgsL7NhR-T4m3OkUVbEPYnmdb3rb3KvHuVb8lGz8Ly0SZduK1rLi8VU8rZ69t8xihncnmtNNFnjMhP-PYaJH~8TiSix0rg6u2V0EWQRT2uxTvL3hEYPPZUS3sT6IMO7bDYg47-6Xy8yJJvYOpYX80-w__')]">
-        <div className="flex flex-col justify-center items-center h-full w-full p-20">
-          <a href="/about">
-            <Image 
-            src="https://s3-alpha-sig.figma.com/img/1d0f/5aab/9dcfbaf7b57f0731143353560885cb6c?Expires=1722816000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=migYxfp25pqq4T-H-o6IhPaR3k-SuSa-WrgPogIQ91H0fiKMsJSC9GZs~p0ATT0kaFa9vG2EhKYu8X-huAN-iG3uRpnh~UtSOqLnkm4C9ZDKtgEUddEBaTSr3OpbIB6QBlGLZFxZEYQUOt2iBvtw7xQ8CHQI6ulfynbJlUT9ZE2tLd1VRCarGzUJt90qKOjCzdnMWmWkcaYiOn9-eQ6PCOHgPmA-43NfeMlf19uhlmC5-0Lc55u6gttVVdMjS4r70pppPztCPNQct-rJgzzGTNHN3PdKDX1dC754F0TuS~5SVNYVjKc7NZJwGgw9nVGTnrU1CqW9Mg9RewBB8HH1tg__"
-            alt="Button Image"
-            width={610}
-            height={24}
-            className="mr-2"
-          />
-          </a>
-          <a 
-          href="/about" 
-          className="absolute bottom-10 right-10 bg-black text-white p-2 rounded">
+    <div className="relative w-screen h-screen bg-cover bg-[url('/images/bg.jpeg')]">
+      <div className="flex flex-col justify-center items-center h-full w-full">
+        <AnimatePresence>
+          {showButton && (
+            <motion.a
+              href="/about"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1 }}
+              key="button"
+            >
+              <Image
+                src="/images/button.png"
+                alt="Button Image"
+                width={610}
+                height={150}
+              />
+            </motion.a>
+          )}
+        </AnimatePresence>
+
+        <AnimatePresence>
+          {showAnnouncement && (
+            <motion.div
+              className="w-[588px] h-[88px] flex justify-center items-center bg-slate-300"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 1 }}
+              key="announcement"
+            >
+              <div className="bg-black text-white p-2 rounded-lg h-full w-full text-6xl flex justify-center items-center">
+                <p>ANNONCEMENT</p>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <a
+          href="/about"
+          className="absolute bottom-10 right-10 bg-black text-white p-2 rounded"
+        >
           Skip Intro
         </a>
-        </div>
+      </div>
     </div>
-  )
+  );
 }
